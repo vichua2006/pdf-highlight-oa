@@ -22,7 +22,7 @@ This project is a PDF viewer and keyword search application developed as part of
 - React 
 - TypeScript
 - react-pdf library for PDF rendering
-- Tailwind CSS for stylinge
+- Tailwind CSS for styling
 - SQLite for local highlight storage
 - Supabase for cloud-based highlight storage (optional)
 
@@ -30,8 +30,13 @@ This project is a PDF viewer and keyword search application developed as part of
 
 1. Clone the repository
 2. Install dependencies: `pnpm install`
-3. Run the development server: `pnpm run dev`
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+3. Set up environment variables:
+   ```bash
+   # Copy the environment template and fill in with keys
+   cp .env.example .env
+   ```
+4. Run the development server: `pnpm run dev`
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Project Structure
 
