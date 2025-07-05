@@ -1,6 +1,8 @@
 import { openaiKey } from "./env"
 // https://stackoverflow.com/questions/64189359/reading-pdf-from-url-with-node-js-using-pdf-js
-import * as pdfjs from "pdfjs-dist/legacy/build/pdf";
+import * as pdfjs from 'pdfjs-dist';
+pdfjs.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/build/pdf.worker.min.mjs';
+
 export interface PageEmbedding {
   pageNumber: number;
   text: string;
