@@ -4,7 +4,7 @@ import { getEmbedding } from '../../utils/embeddingUtils';
 
 export async function POST(req: Request): Promise<Response> {
   try {
-    const { query, k = 5 } = await req.json();
+    const { query, maxCount = 5 } = await req.json();
 
     if (!query || typeof query !== 'string') {
       return new Response(
@@ -19,8 +19,8 @@ export async function POST(req: Request): Promise<Response> {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { data: results, error } = await supabase.rpc('match_embeddings', {
       query_embedding: queryEmbedding,
-      match_threshold: 0.4,
-      match_count: k
+      match_threshold: 0.05,
+      match_count: maxCount
     });
 
     if (error) {
@@ -36,7 +36,7 @@ export async function POST(req: Request): Promise<Response> {
         success: true,
         results: results || [],
         query,
-        k
+        maxCount
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
