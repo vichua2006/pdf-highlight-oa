@@ -1,5 +1,5 @@
 import { openaiKey } from "./env"
-// https://stackoverflow.com/questions/64189359/reading-pdf-from-url-with-node-js-using-pdf-js
+// https://stackoverflow.com/questions/78121846/how-to-get-pdfjs-dist-working-with-next-js-14
 import * as pdfjs from 'pdfjs-dist';
 pdfjs.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/build/pdf.worker.min.mjs';
 

@@ -75,7 +75,7 @@ export default function App() {
         const ocrFile = new File([blob], file.name, { type: 'application/pdf' });
 
         const formData = new FormData();
-        formData.append('file', ocrFile);
+        formData.append('file', file);
         formData.append('filename', file.name);
 
         const uploadResponse = await fetch('/api/upload', {
