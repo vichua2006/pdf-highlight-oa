@@ -45,6 +45,7 @@ export default function App() {
       file.name,
       /* session.data?.user?.email ?? */ undefined
     );
+
     // Creating a searchable PDF:
     // Convert uploaded PDF file to b64 image,
     //   perform OCR,
@@ -58,11 +59,45 @@ export default function App() {
       { pdf: true }
     );
     const pdf = res.data.pdf;
+
+    let uploadedPdfId: string | null = null;
+    let uploadedPdfUrl: string | null = null;
+
     if (pdf) {
       // Update file url if OCR success
       const blob = new Blob([new Uint8Array(pdf)], { type: "application/pdf" });
       const fileOcrUrl = URL.createObjectURL(blob);
-      setPdfOcrUrl(fileOcrUrl);
+      setPdfOcrUrl(fileOcrUrl); //TODO: set to uploaded file
+
+      // Upload the OCR-processed PDF to Supabase
+      try {
+        // Convert blob to File object
+        const ocrFile = new File([blob], file.name, { type: 'application/pdf' });
+
+        const formData = new FormData();
+        formData.append('file', ocrFile);
+        formData.append('filename', file.name);
+
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const uploadResult = await uploadResponse.json();
+
+        if (uploadResult.success) {
+          uploadedPdfId = uploadResult.pdfId;
+          uploadedPdfUrl = uploadResult.url;
+          console.log('PDF uploaded successfully:', {
+            pdfId: uploadedPdfId,
+            url: uploadedPdfUrl
+          });
+        } else {
+          console.error('Upload failed:', uploadResult.error);
+        }
+      } catch (uploadError) {
+        console.error('Upload error:', uploadError);
+      }
 
       // Index words
       // const data = res.data.words;
@@ -84,7 +119,14 @@ export default function App() {
       //   }),
       // });
     }
-    setPdfUrl(fileUrl);
+
+    // Use the uploaded PDF URL if available, otherwise fall back to local URL
+    if (uploadedPdfUrl) {
+      setPdfUrl(uploadedPdfUrl);
+    } else {
+      setPdfUrl(fileUrl);
+    }
+
     setPdfUploaded(true);
     setPdfName(file.name);
     setPdfId(pdfId);
