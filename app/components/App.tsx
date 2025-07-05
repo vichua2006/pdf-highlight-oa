@@ -93,6 +93,7 @@ export default function App() {
     try {
       const pageEmbeddings = await getAllPageEmbeddings(fileUrl, pdfId);
       console.log('Generated embeddings for', pageEmbeddings.length, 'pages');
+      console.log(pageEmbeddings);
 
       // TODO: Store embeddings in your database or send to API
     } catch (error) {

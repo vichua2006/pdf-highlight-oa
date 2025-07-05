@@ -6,4 +6,4 @@ export const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET as string;
 export const storageMethod = process.env.STORAGE_METHOD
   ? (process.env.STORAGE_METHOD as "supabase" | "sqlite")
   : "sqlite";
-export const openAiKey = process.env.OPENAI_API_KEY;
+export const openaiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY as string;

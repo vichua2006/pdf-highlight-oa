@@ -30,11 +30,7 @@ This project is a PDF viewer and keyword search application developed as part of
 
 1. Clone the repository
 2. Install dependencies: `pnpm install`
-3. Set up environment variables:
-   ```bash
-   # Copy the environment template and fill in with keys
-   cp .env.example .env
-   ```
+3. Set up environment variables: `cp .env.example .env`
 4. Run the development server: `pnpm run dev`
 5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
@@ -64,6 +60,14 @@ This project is a PDF viewer and keyword search application developed as part of
 - Export/import as JSON functionality for highlights
 - Scroll the sidebar highlighted area into view across different PDFs. 
 
+
+## API Endpoints
+
+### Embeddings
+- `POST /api/embeddings/generate`
+  - Generates semantic embeddings for each page of a PDF
+  - Body: `{ pdfUrl: string, pdfId: string }`
+  - Returns: `{ success: boolean, embeddings: PageEmbedding[], count: number }`
 
 ## Future Improvements
 
