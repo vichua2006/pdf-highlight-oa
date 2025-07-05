@@ -1,8 +1,9 @@
 // app/api/upload/route.ts
 import { createClient } from "@supabase/supabase-js";
 import { supabaseUrl, supabaseKey } from "../../utils/env";
+import { getAllPageEmbeddings } from '../../utils/embeddingUtils';
 
-// TODO: refactor to structure like other endpoints (with a `handleRequest` function)
+// TODO: refactor to structure like other endpoints (with a `handleRequest` function), and factor supabase util functions
 export async function POST(req: Request): Promise<Response> {
   try {
     const formData = await req.formData();
@@ -46,8 +47,8 @@ export async function POST(req: Request): Promise<Response> {
         filename: filename,
         file_path: filePath,
         file_url: urlData.publicUrl,
-        pages: null, // You can extract this later
-        content_hash: null // You can compute this later
+        pages: null,
+        content_hash: null // TODO: dedup if time allows
       })
       .select()
       .single();
@@ -58,6 +59,12 @@ export async function POST(req: Request): Promise<Response> {
         JSON.stringify({ error: "Database insert failed" }),
         { status: 500, headers: { "Content-Type": "application/json" } }
       );
+    }
+
+    // Trigger embedding generation if upload successful
+    if (dbData) {
+      // done async for seperate error handling and fast UX (only seeing pdf upload time)
+      generateEmbeddingsInBackground(dbData.id, urlData.publicUrl);
     }
 
     return new Response(
@@ -76,5 +83,37 @@ export async function POST(req: Request): Promise<Response> {
       JSON.stringify({ error: "Internal server error" }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
+  }
+}
+
+async function generateEmbeddingsInBackground(pdfId: string, pdfUrl: string) {
+  try {
+    const embeddings = await getAllPageEmbeddings(pdfUrl, pdfId);
+
+    // Store embeddings in database
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    for (const embedding of embeddings) {
+      await supabase
+        .from('embedding')
+        .insert({
+          doc_id: pdfId,
+          page_no: embedding.pageNumber,
+          chunk_no: 0,
+          text: embedding.text,
+          text_vec: embedding.embedding
+        });
+    }
+
+    // Update the pdf record with page count
+    await supabase
+      .from('pdf')
+      .update({ pages: embeddings.length })
+      .eq('id', pdfId);
+
+    console.log('Background embedding generation sucess!');
+
+  } catch (error) {
+    console.error('Background embedding generation failed:', error);
   }
 }
