@@ -46,7 +46,6 @@ export const getPageEmbedding = async (text: string): Promise<number[]> => {
   return data.data[0].embedding;
 };
 
-// TODO: use the ocr'ed pdf as the link for pdfUrl
 export const getAllPageEmbeddings = async (pdfUrl: string, pdfId: string): Promise<PageEmbedding[]> => {
   const pdf = await pdfjs.getDocument(pdfUrl).promise;
   const numPages = pdf.numPages;

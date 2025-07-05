@@ -58,7 +58,7 @@ export default function App() {
       { pdfTitle: "ocr-out" },
       { pdf: true }
     );
-    const pdf = res.data.pdf;
+    const pdf = res.data.pdf; // TODO: applies this ocr before embedding to get text as images
 
     let uploadedPdfId: string | null = null;
     let uploadedPdfUrl: string | null = null;
@@ -67,7 +67,7 @@ export default function App() {
       // Update file url if OCR success
       const blob = new Blob([new Uint8Array(pdf)], { type: "application/pdf" });
       const fileOcrUrl = URL.createObjectURL(blob);
-      setPdfOcrUrl(fileOcrUrl); //TODO: set to uploaded file
+      setPdfOcrUrl(fileOcrUrl); // this is fine, only applies to highlighting
 
       // Upload the OCR-processed PDF to Supabase
       try {
