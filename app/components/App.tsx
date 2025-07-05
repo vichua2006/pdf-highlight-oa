@@ -89,17 +89,6 @@ export default function App() {
     setPdfName(file.name);
     setPdfId(pdfId);
 
-    // Generate embeddings for all pages
-    try {
-      const pageEmbeddings = await getAllPageEmbeddings(fileUrl, pdfId);
-      console.log('Generated embeddings for', pageEmbeddings.length, 'pages');
-      console.log(pageEmbeddings);
-
-      // TODO: Store embeddings in your database or send to API
-    } catch (error) {
-      console.error("Error generating embeddings:", error);
-    }
-
     setLoading(false);
   };
 
