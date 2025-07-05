@@ -18,6 +18,7 @@ import { createWorker } from "tesseract.js";
 // import { useSession } from "next-auth/react";
 import { getPdfId } from "../utils/pdfUtils";
 import { storageMethod } from "../utils/env";
+import { getAllPageEmbeddings } from '../utils/embeddingUtils'; // or localEmbeddingUtils
 
 export default function App() {
   const [pdfUploaded, setPdfUploaded] = useState(false);
@@ -87,6 +88,17 @@ export default function App() {
     setPdfUploaded(true);
     setPdfName(file.name);
     setPdfId(pdfId);
+
+    // Generate embeddings for all pages
+    try {
+      const pageEmbeddings = await getAllPageEmbeddings(fileUrl, pdfId);
+      console.log('Generated embeddings for', pageEmbeddings.length, 'pages');
+
+      // TODO: Store embeddings in your database or send to API
+    } catch (error) {
+      console.error("Error generating embeddings:", error);
+    }
+
     setLoading(false);
   };
 
@@ -136,9 +148,9 @@ export default function App() {
         const body =
           storageMethod === StorageMethod.sqlite
             ? {
-                pdfId,
-                highlights: data,
-              }
+              pdfId,
+              highlights: data,
+            }
             : data;
         await fetch("/api/highlight/update", {
           method: "POST",
@@ -196,9 +208,9 @@ export default function App() {
         const body =
           storageMethod === StorageMethod.sqlite
             ? {
-                pdfId,
-                highlights: storedHighlights,
-              }
+              pdfId,
+              highlights: storedHighlights,
+            }
             : storedHighlights;
         await fetch("/api/highlight/update", {
           method: "POST",
