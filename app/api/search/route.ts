@@ -19,7 +19,7 @@ export async function POST(req: Request): Promise<Response> {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { data: results, error } = await supabase.rpc('match_embeddings', {
       query_embedding: queryEmbedding,
-      match_threshold: -0.1,
+      match_threshold: 0.4,
       match_count: k
     });
 
