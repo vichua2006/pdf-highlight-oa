@@ -25,7 +25,7 @@ export const extractPageText = async (pdfUrl: string, pageNumber: number): Promi
   return text;
 };
 
-export const getPageEmbedding = async (text: string): Promise<number[]> => {
+export const getEmbedding = async (text: string): Promise<number[]> => {
   const response = await fetch('https://api.openai.com/v1/embeddings', {
     method: 'POST',
     headers: {
@@ -57,7 +57,7 @@ export const getAllPageEmbeddings = async (pdfUrl: string, pdfId: string): Promi
     // Skip empty pages
     if (!text.trim()) continue;
 
-    const embedding = await getPageEmbedding(text);
+    const embedding = await getEmbedding(text);
 
     embeddings.push({
       pageNumber: pageNum,
